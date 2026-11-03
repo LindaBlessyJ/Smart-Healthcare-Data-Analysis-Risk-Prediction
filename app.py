@@ -32,7 +32,7 @@ def create_data():
 
 df = create_data()
 
-st.sidebar.header("Navigation")
+st.sidebar.title("Navigation")
 page = st.sidebar.selectbox(
     "Choose a section",
     ["Dashboard", "Dataset", "Sample Risk Prediction"]
@@ -41,53 +41,91 @@ page = st.sidebar.selectbox(
 if page == "Dashboard":
     st.header("Healthcare Data Overview")
 
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Total Records", len(df))
-    c2.metric("Average Age", f"{df['Age'].mean():.1f}")
-    c3.metric("Average Glucose", f"{df['Glucose'].mean():.1f}")
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Total Records", len(df))
+    col2.metric("Average Age", f"{df['Age'].mean():.1f}")
+    col3.metric("Average Glucose", f"{df['Glucose'].mean():.1f}")
 
     st.subheader("Age Distribution")
     fig, ax = plt.subplots()
-    ax.hist(df["Age"], bins=7)
+    ax.hist(df["Age"], bins=7, edgecolor="black")
     ax.set_xlabel("Age")
     ax.set_ylabel("Number of Records")
+    ax.set_title("Distribution of Ages")
+    ax.set_ylim(bottom=0)
     st.pyplot(fig)
     plt.close(fig)
 
     st.subheader("Blood Pressure vs Glucose")
-    st.scatter_chart(df, x="Systolic_BP", y="Glucose")
+    fig, ax = plt.subplots()
+    ax.scatter(
+        df["Systolic_BP"],
+        df["Glucose"],
+        s=70,
+        alpha=0.8
+    )
+    ax.set_xlabel("Systolic Blood Pressure")
+    ax.set_ylabel("Glucose")
+    ax.set_title("Blood Pressure vs Glucose")
+    ax.set_xlim(left=0)
+    ax.set_ylim(bottom=0)
+    ax.grid(True, alpha=0.3)
+    st.pyplot(fig)
+    plt.close(fig)
 
 elif page == "Dataset":
     st.header("Sample Healthcare Dataset")
     st.dataframe(df, use_container_width=True)
+
     st.subheader("Summary Statistics")
     st.dataframe(df.describe(), use_container_width=True)
 
+    st.subheader("Records by Sample Label")
+    st.bar_chart(df["Risk_Label"].value_counts().sort_index())
+
+    csv = df.to_csv(index=False).encode("utf-8")
+    st.download_button(
+        "Download Sample Dataset",
+        data=csv,
+        file_name="healthcare_sample.csv",
+        mime="text/csv"
+    )
+
 else:
-    st.header("Demonstration Model")
+    st.header("Sample Machine Learning Demonstration")
+    st.write(
+        "A Random Forest model trained on a small synthetic dataset."
+    )
 
     X = df[["Age", "Systolic_BP", "Glucose"]]
     y = df["Risk_Label"]
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.3, random_state=42, stratify=y
+        X,
+        y,
+        test_size=0.30,
+        random_state=42,
+        stratify=y
     )
 
     model = RandomForestClassifier(
-        n_estimators=100, random_state=42
+        n_estimators=100,
+        random_state=42
     )
     model.fit(X_train, y_train)
 
     predictions = model.predict(X_test)
     accuracy = accuracy_score(y_test, predictions)
+
     st.metric("Demo Model Accuracy", f"{accuracy:.0%}")
 
     st.warning(
-        "This accuracy comes from a tiny synthetic dataset. "
-        "It does not represent real-world medical performance."
+        "This score is based on a tiny synthetic dataset. "
+        "It does not measure real-world medical accuracy."
     )
 
-    st.subheader("Enter Sample Values")
+    st.subheader("Try Sample Input Values")
+
     age = st.slider("Age", 18, 90, 40)
     bp = st.slider("Systolic Blood Pressure", 80, 200, 120)
     glucose = st.slider("Glucose", 60, 250, 100)
@@ -98,16 +136,17 @@ else:
             "Systolic_BP": [bp],
             "Glucose": [glucose]
         })
+
         result = model.predict(sample)[0]
 
         if result == 1:
-            st.write("The sample model classified this record as label 1.")
+            st.write("Sample model output: Label 1")
         else:
-            st.write("The sample model classified this record as label 0.")
+            st.write("Sample model output: Label 0")
 
         st.caption(
-            "These labels are illustrative only and must not be "
-            "used to assess an actual person's health."
+            "This is an illustrative model label, not a medical "
+            "risk assessment or diagnosis."
         )
 
 st.divider()
