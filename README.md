@@ -1,39 +1,49 @@
-# Smart-Healthcare-Data-Analysis-Risk-Prediction
-Smart Healthcare Data Analysis & Risk Prediction
 
-Project Overview
+# 🏥 Smart Healthcare Data Analysis & Risk Prediction
 
-This project uses Python and Machine Learning to analyze healthcare-related data, visualize patterns, and demonstrate sample health-risk classification.
+## Project Overview
+This project demonstrates healthcare data analysis, data visualization, and machine learning classification using Python.
 
-Objectives
+## Objectives
+- Analyze sample healthcare data.
+- Visualize data using charts and graphs.
+- Train a Random Forest classification model.
+- Display model accuracy for demonstration.
+- Build an interactive dashboard.
 
-- Analyze healthcare datasets.
-- Visualize health-related data using charts.
-- Train a Machine Learning classification model.
-- Evaluate model performance.
-- Build an interactive dashboard using Streamlit.
-
-Technologies Used
-
+## Technologies Used
 - Python
 - Pandas
 - Matplotlib
 - Scikit-learn
 - Streamlit
+- GitHub
 
-Project Workflow
+## Project Modules
+1. Healthcare Dataset
+2. Data Analysis
+3. Data Visualization
+4. Machine Learning Model
+5. Interactive Risk Classification
 
-1. Dataset collection or preparation
-2. Data preprocessing
-3. Exploratory data analysis
-4. Machine Learning model training
-5. Model evaluation
-6. Interactive risk-prediction demonstration
+## How to Run
+Install the required libraries:
 
-Disclaimer
+```bash
+pip install -r requirements.txt
+```
 
-This is an educational project. Predictions are illustrative and are not intended for medical diagnosis or treatment.
+Run the application:
 
-Author
+```bash
+streamlit run app.py
+```
 
+## Dataset
+The application uses a small, synthetic dataset created for educational demonstration. It is not real patient data.
+
+## Disclaimer
+This project is for educational purposes only. Its predictions are not medically validated and must not be used for diagnosis or treatment.
+
+## Author
 Linda Blessy J
